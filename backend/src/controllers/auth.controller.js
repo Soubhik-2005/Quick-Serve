@@ -1,0 +1,68 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user.model');
+const generateToken = require('../utils/generateToken');
+
+async function signUpUser (req, res) {
+    const {name,email, phone, address, password, role} = req.body;
+
+    // validate the data
+    if(!name  || !phone || !address || !email || !password){
+        return res.status(400).json({message:"All fields are required"});
+    }
+    const userExists = await User.findOne({email});
+    if(userExists){
+        return res.status(400).json({message:"User already exists"});
+    }
+
+    try{
+        const hashedPassword = await bcrypt.hash(password,10);
+        const user = await User.create({
+            fullName:name,
+            email,  
+            phone,
+            address,
+            password:hashedPassword,
+            role,
+    })
+
+    const token = generateToken(user._id);
+
+    res.cookie('token', token);
+    console.log(user);
+
+    res.status(201).json({message:"User registered successfully", user});
+    }
+    catch(error){
+        res.status(500).json({message:"Error in registerUser", error});
+    }
+}
+
+async function signInUser(req,res){
+    const {email, password, role} = req.body;
+    if(!email || !password){
+        return res.status(400).json({message:"All fields are required"});
+    }
+    try{
+        const isUser = await User.findOne({email});
+        if(!isUser){
+            return res.status(400).json({message:"Invalid credentials"});
+        }
+        if(isUser.role !== role){
+            return res.status(400).json({message:"Invalid credentials"});
+        }
+        const isMatch = await bcrypt.compare(password, isUser.password);
+        if(!isMatch){
+            return res.status(400).json({message:"Invalid credentials"});
+        }
+        const token = generateToken(isUser._id);
+        res.cookie('token', token);
+        res.status(200).json({message:"User signed in successfully", user:isUser});
+    }
+    catch(error){
+        res.status(500).json({message:"Error in signInUser", error});
+    }
+}
+
+
+module.exports = {signUpUser, signInUser};
