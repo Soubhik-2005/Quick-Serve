@@ -29,8 +29,7 @@ async function signUpUser (req, res) {
     const token = generateToken(user._id);
 
     res.cookie('token', token);
-    console.log(user);
-
+    
     res.status(201).json({message:"User registered successfully", user});
     }
     catch(error){

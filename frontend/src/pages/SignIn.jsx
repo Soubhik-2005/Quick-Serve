@@ -1,15 +1,19 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
+   const[successMessage, setSuccessMessage] = useState("")
+   const[errorMessage, setErrorMessage] = useState("")
 
   async function handleSubmit(e) {
     try {
       e.preventDefault();
+      setErrorMessage("");
       const { data } = await axios.post(
         "http://localhost:8000/api/auth/signin",
         {
@@ -22,8 +26,9 @@ function SignIn() {
         },
       );
         console.log(data);
+        setSuccessMessage(data.message)
     } catch (error) {
-      console.log("error in handleSubmit", error);
+      setErrorMessage(error?.response?.data?.message)
     }
   }
   return (
@@ -32,6 +37,9 @@ function SignIn() {
         <h1 className="text-2xl font-bold text-orange-500 mb-2 text-center">
           Quick Serve
         </h1>
+        {
+    successMessage ? <p className="text-green-500 text-center">{successMessage}</p> : <p className="text-red-500 text-center">{errorMessage}</p>
+}
         <label htmlFor="email" className="">
           Email
         </label>
@@ -76,6 +84,9 @@ function SignIn() {
         >
           Sign In
         </button>
+        <div className="m-2 text-center">
+                <span>Don't have an account?</span><Link to="/signup" className="text-blue-800 hover:underline"> Sign Up </Link>
+        </div>
       </div>
     </div>
   );
