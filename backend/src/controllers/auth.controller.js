@@ -63,5 +63,39 @@ async function signInUser(req,res){
     }
 }
 
+async function googleSignUp(req,res){
+    try{
+    const {name,email,address,phone,role} = req.body;
+    const isUser = await User.findOne({email});
+    if(isUser) return res.status(400).send({message:"user already exist"});
+    const user = await User.create({
+        fullName:name,
+        email,
+        address,
+        role,
+        phone
+    });
+    const token = generateToken(user._id);
+    res.cookie("token" , token);
+    res.status(201).send({message:"user created successfully"});
+    }catch(error){
+        res.status(400).send({message:"error occurren in googleSignIn"});
+    }
+}
 
-module.exports = {signUpUser, signInUser};
+async function googleSignIn(req,res){
+    try{
+    const {email,role} = req.body;
+    const isUser = await User.findOne({email});
+    if(!isUser || isUser.role != role) return res.status(400).send({message:"user is not exist"});
+
+    const token = generateToken(isUser._id);
+    res.cookie('token',token);
+    res.status(200).send({message:"user logged in successfully"});
+}catch(err){
+    res.status(400).send({message:"error in googleSignIn"});
+}
+}
+
+
+module.exports = {signUpUser, signInUser, googleSignUp, googleSignIn};

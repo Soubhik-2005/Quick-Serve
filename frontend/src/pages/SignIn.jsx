@@ -2,13 +2,17 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
+import { FaGoogle } from "react-icons/fa";
+import { signInWithPopup } from "firebase/auth";
+import { auth } from "../hooks/useGoogleAuth";
+import { GoogleAuthProvider } from "firebase/auth";
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
    const[successMessage, setSuccessMessage] = useState("")
    const[errorMessage, setErrorMessage] = useState("")
+   const provider = new GoogleAuthProvider();
 
   async function handleSubmit(e) {
     try {
@@ -31,6 +35,27 @@ function SignIn() {
       setErrorMessage(error?.response?.data?.message)
     }
   }
+
+async function googleSignIn(e){
+  try{
+    e.preventDefault();
+    setErrorMessage("");
+    const result = await signInWithPopup(auth,provider);
+    const Email = result.user.email;
+    const {data}= await axios.post("http://localhost:8000/api/auth/googleSignIn",
+      {
+      email:Email,
+      role
+    },
+    {
+      withCredentials:true
+    })
+    setSuccessMessage(data.message);
+  }catch(error){
+    setSuccessMessage("");
+    setErrorMessage(error?.response?.data?.message);
+  }
+}
   return (
     <div className=" w-screen flex justify-center items-center bg-orange-100 h-screen overflow-hidden">
       <div className="max-w-sm bg-white px-8 py-2 rounded-lg shadow-md">
@@ -84,6 +109,12 @@ function SignIn() {
         >
           Sign In
         </button>
+          <button className="w-full text-black border border-orange-600 py-2 rounded-md hover:bg-orange-500 hover:text-white cursor-pointer mt-2 active:scale-95 transition-all duration-300"  onClick={googleSignIn}>
+                     <span className="flex items-center justify-center gap-2">
+                         Sign up with 
+                         <FaGoogle className=" " size={16}/>
+                         </span>
+          </button>
         <div className="m-2 text-center">
                 <span>Don't have an account?</span><Link to="/signup" className="text-blue-800 hover:underline"> Sign Up </Link>
         </div>

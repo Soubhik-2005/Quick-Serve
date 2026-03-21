@@ -2,7 +2,9 @@ import React from 'react'
 import { useState } from 'react'
 import axios from 'axios'
 import { Link } from "react-router-dom";
-
+import {auth} from "../hooks/useGoogleAuth";
+import { FaGoogle } from "react-icons/fa";
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 
 function SignUp() {
@@ -14,6 +16,8 @@ function SignUp() {
     const [role, setRole] = useState("user")
     const[successMessage, setSuccessMessage] = useState("")
  const[errorMessage, setErrorMessage] = useState("")
+
+    const provider = new GoogleAuthProvider();
     async function handleSubmit(e){
         if(phone.trim().length!=10){
         setErrorMessage ("Mobile number must be of 10 digits");
@@ -47,6 +51,35 @@ catch(error){
         setErrorMessage(error.response.data.message);
     }
 }
+    }
+   async function handleGoogleSubmit(e){
+        e.preventDefault();
+        if(phone.trim().length!=10){
+        setErrorMessage ("Mobile number must be of 10 digits");
+        return;
+        }
+
+        try{
+            setErrorMessage("");
+            const result = await signInWithPopup(auth,provider);
+            console.log(result.user.displayName);
+            console.log(result.user.email)
+            const fullName = result?.user?.displayName;
+            const Email = result?.user?.email;
+
+            const {data} = await axios.post("http://localhost:8000/api/auth/googleSignUp",{
+                name:fullName,
+                email:Email,
+                address,
+                role,
+                phone
+            },{withCredentials:true});
+            setSuccessMessage(data.message)
+
+        }catch(error){
+            setSuccessMessage("");
+            setErrorMessage(error?.response?.data?.message);
+        }
     }
 
   return (
@@ -88,6 +121,17 @@ catch(error){
     
 
         <button className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 cursor-pointer mt-2 active:scale-95 "  onClick={handleSubmit}> Register </button>
+
+
+        <button className="w-full text-black border border-orange-600 py-2 rounded-md hover:bg-orange-500 hover:text-white cursor-pointer mt-2 active:scale-95 transition-all duration-300"  onClick={handleGoogleSubmit}>
+            <span className="flex items-center justify-center gap-2">
+                Sign up with 
+                <FaGoogle className=" " size={16}/>
+                </span>
+ </button>
+ 
+
+
         <div className="m-2 text-center">
         <span>Already have an account?</span><Link to="/signin" className="text-blue-800 hover:underline"> Sign In </Link>
         </div>
