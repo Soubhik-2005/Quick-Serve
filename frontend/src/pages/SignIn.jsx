@@ -6,6 +6,7 @@ import { FaGoogle } from "react-icons/fa";
 import { signInWithPopup } from "firebase/auth";
 import { auth } from "../hooks/useGoogleAuth";
 import { GoogleAuthProvider } from "firebase/auth";
+import { fetchUser } from "../hooks/useFetchCurrentUser";
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +30,7 @@ function SignIn() {
           withCredentials: true,
         },
       );
+      fetchUser();
         console.log(data);
         setSuccessMessage(data.message)
     } catch (error) {
@@ -50,6 +52,7 @@ async function googleSignIn(e){
     {
       withCredentials:true
     })
+    fetchUser();
     setSuccessMessage(data.message);
   }catch(error){
     setSuccessMessage("");
@@ -87,6 +90,9 @@ async function googleSignIn(e){
           placeholder="enter your password here"
           onChange={(e) => setPassword(e.target.value)}
         />
+        <div className="mb-2 flex justify-end">
+        <Link to="/forgot-password" className="text-blue-800 hover:underline "> forgot password? </Link>
+        </div>
         <div className="flex justify-between">
           {["user", "delivery-partner", "admin"].map((r) => (
             <div

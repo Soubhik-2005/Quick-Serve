@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const generateToken = require('../utils/generateToken');
+const currentUser = require("../middlewares/auth.middleware")
 
 async function signUpUser (req, res) {
     const {name,email, phone, address, password, role} = req.body;
@@ -28,9 +29,13 @@ async function signUpUser (req, res) {
 
     const token = generateToken(user._id);
 
-    res.cookie('token', token);
+    res.cookie('token', token,{
+        httpOnly:true,
+        secure:false,
+        sameSite:"Lax"
+    });
     
-    res.status(201).json({message:"User registered successfully", user});
+    res.status(201).json({message:"User registered successfully"});
     }
     catch(error){
         res.status(500).json({message:"Error in registerUser", error});
@@ -56,7 +61,7 @@ async function signInUser(req,res){
         }
         const token = generateToken(isUser._id);
         res.cookie('token', token);
-        res.status(200).json({message:"User signed in successfully", user:isUser});
+        res.status(200).json({message:"User signed in successfully"});
     }
     catch(error){
         res.status(500).json({message:"Error in signInUser", error});
@@ -91,11 +96,22 @@ async function googleSignIn(req,res){
 
     const token = generateToken(isUser._id);
     res.cookie('token',token);
-    res.status(200).send({message:"user logged in successfully"});
+    res.status(200).json({message:"user logged in successfully"});
 }catch(err){
-    res.status(400).send({message:"error in googleSignIn"});
+    res.status(400).json({message:"error in googleSignIn"});
 }
 }
 
+async function getMe(req,res){
+    try{
+        
+        const id = req.userId ;
+        const user = await User.findById(id);
+        if(!user) return res.status(401).json({message:"user not logged in yet"});
+        return res.status(200).send(user);
+    }catch(error){
+        res.status(401).json({message:"user not found"});
+    }
+}
 
-module.exports = {signUpUser, signInUser, googleSignUp, googleSignIn};
+module.exports = {signUpUser, signInUser, googleSignUp, googleSignIn,getMe};

@@ -4,6 +4,7 @@ import axios from 'axios'
 import { Link } from "react-router-dom";
 import {auth} from "../hooks/useGoogleAuth";
 import { FaGoogle } from "react-icons/fa";
+import { fetchUser } from '../hooks/useFetchCurrentUser';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 
@@ -41,6 +42,7 @@ function SignUp() {
         },{
             withCredentials:true,
         });
+        fetchUser();
         console.log(data);
         setSuccessMessage(data.message)
     }
@@ -74,6 +76,7 @@ catch(error){
                 role,
                 phone
             },{withCredentials:true});
+            fetchUser();
             setSuccessMessage(data.message)
 
         }catch(error){

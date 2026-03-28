@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type:String,
+        select : false // this is for so that the password never fetched at frontend accidentally
     },
     phone:{
         type:String,
