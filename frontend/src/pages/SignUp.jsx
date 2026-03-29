@@ -6,9 +6,12 @@ import {auth} from "../hooks/useGoogleAuth";
 import { FaGoogle } from "react-icons/fa";
 import { fetchUser } from '../hooks/useFetchCurrentUser';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
+
 
 
 function SignUp() {
+    const dispatch = useDispatch();
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
@@ -42,7 +45,7 @@ function SignUp() {
         },{
             withCredentials:true,
         });
-        fetchUser();
+        fetchUser(dispatch);
         console.log(data);
         setSuccessMessage(data.message)
     }
@@ -76,7 +79,7 @@ catch(error){
                 role,
                 phone
             },{withCredentials:true});
-            fetchUser();
+            fetchUser(dispatch);
             setSuccessMessage(data.message)
 
         }catch(error){

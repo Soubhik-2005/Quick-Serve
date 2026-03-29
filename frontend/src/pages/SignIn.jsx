@@ -7,7 +7,10 @@ import { signInWithPopup } from "firebase/auth";
 import { auth } from "../hooks/useGoogleAuth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { fetchUser } from "../hooks/useFetchCurrentUser";
+import { useDispatch } from "react-redux";
+
 function SignIn() {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
@@ -30,7 +33,7 @@ function SignIn() {
           withCredentials: true,
         },
       );
-      fetchUser();
+      fetchUser(dispatch);
         console.log(data);
         setSuccessMessage(data.message)
     } catch (error) {
@@ -52,7 +55,7 @@ async function googleSignIn(e){
     {
       withCredentials:true
     })
-    fetchUser();
+    fetchUser(dispatch);
     setSuccessMessage(data.message);
   }catch(error){
     setSuccessMessage("");
