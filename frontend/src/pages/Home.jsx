@@ -2,36 +2,45 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import {useState} from 'react'
 import axios from 'axios'
+import { useEffect } from 'react'
+import Card from '../components/Card'
 
 export const Home = () => {
   const [resturent, setResturent ] = useState([])
+    useEffect(()=>{
+        async function fetchResturents(){
+          try{
+            const {data} = await axios.get("http://localhost:8000/api/resturent",{
+                withCredentials: true,
+            });
+            setResturent(data.resturents);
+          } catch (error) {
+            console.error("Error fetching resturents:", error);
+          }
+        }
+        fetchResturents();
+    }, []);
 
-  async function fetchResturents(){
-      const {data} = await axios.get("http://localhost:8000/api/resturent",{
-        withCredentials: true,
-      });
       
-      setResturent(data.resturents);
-      ;
-
-  }
+  
   return (
     <div>
         <Navbar />
-        <button onClick={fetchResturents} className="bg-black text-white py-2 px-4 rounded-md hover:bg-brand-dark">
-          Fetch Resturents
-        </button>
-{
-        resturent.map((item) => (
-          <div key={item._id}>
-            <img src={item.image} alt={item.name} />
-            <h2>{item.name}</h2>
-            <p>{item.address}</p>
-            <p>{item.description}</p>
+        <div className="bg-orange-100 w-screen p-4">
+        <h2 className="text-xl p-2">Resturents</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {
+          resturent.map((item) => (
+            <div key={item._id} >
+              <Card id={item._id} img={item.image} name={item.name} address={item.location} deliveryTime={item.deliveryTime} cuisine={item.cuisine} rating={item.rating} />
 
-          </div>
-        ))
-      }
+            </div>
+          ))
+        }
+        </div>
+        </div>
+        
+
 
     </div>
   )

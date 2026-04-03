@@ -9,4 +9,17 @@ async function getAllResturents(req, res) {
     }
 }
 
-module.exports = {getAllResturents};
+async function getResturentById(req, res) {
+    const {id} = req.params;
+    try{
+        const resturent = await Resturent.findById(id);
+        if(!resturent){
+            return res.status(404).json({message: "Resturent not found"});
+        }
+        res.status(200).json({resturent});
+    } catch (error) {
+        res.status(500).json({message: "Error fetching resturent", error});
+    }
+}
+
+module.exports = {getAllResturents, getResturentById};

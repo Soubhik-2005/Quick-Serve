@@ -15,7 +15,7 @@ function Navbar() {
   }
 
   return (
-    <div className="bg-orange-100 h-screen w-screen">
+    
         <div className="bg-orange-300 p-4 flex justify-between items-center text-xl">
         <h1>{greeting()}, {user?.fullName}</h1>
         <div className="h-[8vh] md:w-[20vw] md:bg-gray-200 rounded-lg flex justify-between items-center px-4 overflow-hidden w-[12vw] bg-transparent">
@@ -36,7 +36,7 @@ function Navbar() {
             {user?.fullName?.charAt(0)?.toUpperCase()}
         </div>
         </div>
-    </div>
+    
   )
 }
 

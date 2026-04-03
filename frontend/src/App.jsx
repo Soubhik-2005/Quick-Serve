@@ -8,6 +8,7 @@ import { Navigate } from 'react-router-dom'
 import {useFetchCurrentUser} from './hooks/useFetchCurrentUser'
 import { useSelector } from 'react-redux'
 import Loading from './components/Loading'
+import ResturentPage from './pages/ResturentPage'
 function App() {
   useFetchCurrentUser();
   const {user, loading} = useSelector((state) => state.auth);
@@ -21,6 +22,7 @@ function App() {
       <Route path="/signup" element={user ? <Navigate to="/home" /> : <SignUp />} />
       <Route path="/signin" element={user ? <Navigate to="/home" /> : <SignIn />} />
       <Route path="/home" element={user? <Home /> : <Navigate to="/signup"/>}/>
+      <Route path="/resturent/:id" element={user? <ResturentPage /> : <Navigate to="/signup"/>}/>
       {/* <Route path="/forgot-password" element={<ForgotPassword/>}/> */}
     </Routes>
   )
