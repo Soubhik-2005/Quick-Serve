@@ -15,7 +15,9 @@ app.use(express.json());
 
 
 const authRouter = require('./routes/auth.route');
+const resturentRouter = require('./routes/resturent.route');
 
 app.use('/api/auth', authRouter);
+app.use('/api/resturent', resturentRouter);
 
 module.exports = app;
