@@ -23,10 +23,23 @@ const resturentSchema = new mongoose.Schema({
     },
     menu:[
         {
-            name:String,
-            price:Number,
-            image:String
-        }
+        name:{
+        type:String,
+        required:true
+    },
+    price:{
+        type:Number,
+        required:true
+    },
+    image:{
+        type:String,
+        required:true
+    },
+    description:{
+        type:String,
+        required:true
+    }
+}
     ],
     logo:{
         type:String,
