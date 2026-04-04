@@ -55,7 +55,7 @@ async function getCart(req, res) {
     console.log(cart);
     return res
       .status(200)
-      .json(cart || { items: [], totalItems: 0, totalPrice: 0 });
+      .json(cart );
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
