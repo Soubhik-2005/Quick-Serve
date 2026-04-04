@@ -32,7 +32,7 @@ export const Home = () => {
           {
           resturent.map((item) => (
             <div key={item._id} >
-              <Card id={item._id} img={item.image} name={item.name} address={item.location} deliveryTime={item.deliveryTime} cuisine={item.cuisine} rating={item.rating} />
+              <Card id={item._id} img={item.image} name={item.name} address={item.location} deliveryTime={item.deliveryTime} cuisine={item.cuisine} rating={item.rating} logo={item.logo}/>
 
             </div>
           ))

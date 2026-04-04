@@ -20,6 +20,17 @@ const resturentSchema = new mongoose.Schema({
     imageUrl: {
         type: String,
         required: true
+    },
+    menu:[
+        {
+            name:String,
+            price:Number,
+            image:String
+        }
+    ],
+    logo:{
+        type:String,
+        required:true
     }
 });
 

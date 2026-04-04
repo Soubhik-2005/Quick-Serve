@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const generateToken = require('../utils/generateToken');
-const currentUser = require("../middlewares/auth.middleware")
+
 
 async function signUpUser (req, res) {
     const {name,email, phone, address, password, role} = req.body;
@@ -48,14 +48,15 @@ async function signInUser(req,res){
         return res.status(400).json({message:"All fields are required"});
     }
     try{
-        const isUser = await User.findOne({email});
+        const isUser = await User.findOne({email}).select("+password");
         if(!isUser){
             return res.status(400).json({message:"Invalid credentials"});
         }
+        
         if(isUser.role !== role){
             return res.status(400).json({message:"Invalid credentials"});
         }
-        const isMatch = await bcrypt.compare(password, isUser.password);
+        const isMatch =  bcrypt.compare(password, isUser.password);
         if(!isMatch){
             return res.status(400).json({message:"Invalid credentials"});
         }
