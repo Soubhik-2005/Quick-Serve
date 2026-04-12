@@ -1,10 +1,12 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import {Link} from "react-router-dom"
 
 function Card({id, img, name, address, deliveryTime, cuisine, rating,logo}) {
     const Navigate = useNavigate();
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-105 object-cover transition duration-300 p-6 w-[100%]" onClick={()=> Navigate(`/resturent/${id}`)}>
+    <Link to={`/resturent/${id}`}>
+    <div className="bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-105 object-cover transition duration-300 p-6 w-[100%]" >
         <img src={img} alt="Resturent" className="w-full h-full rounded-lg" />
         <div className="flex items-center mt-4 gap-4">
         <img src={logo} alt={name} className="w-15 h-15 object-cover mb-4 rounded-lg display-inline"/>
@@ -19,6 +21,7 @@ function Card({id, img, name, address, deliveryTime, cuisine, rating,logo}) {
 
 
     </div>
+    </Link>
   )
 }
 

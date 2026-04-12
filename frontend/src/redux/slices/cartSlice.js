@@ -11,6 +11,7 @@ const initialState ={
   initialState,
   reducers:{
     setCart:(state, action) =>{
+      console.log("Action payload:",action.payload)
       state.items = action.payload.items;
       state.totalItems = action.payload.totalItems;
       state.totalPrice = action.payload.totalPrice;

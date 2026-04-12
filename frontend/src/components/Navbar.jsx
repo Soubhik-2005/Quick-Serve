@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { useState } from 'react';
+import {Link} from "react-router-dom"
 
 function Navbar() {
     const [search, setSearch] = useState("");
@@ -28,10 +29,12 @@ function Navbar() {
              />
              <FaSearch className="cursor-pointer"/>
         </div>
+        <Link to="/cart">
         <div className="flex cursor-pointer items-center text-md hidden md:block">
         <MdOutlineShoppingCart size={30} />
         <h3 >orders</h3>
         </div>
+        </Link>
         <div className="h-16 w-16 rounded-4xl flex items-center justify-center bg-gray-200 text-2xl font-bold text-gray-700 cursor-pointer">
             {user?.fullName?.charAt(0)?.toUpperCase()}
         </div>

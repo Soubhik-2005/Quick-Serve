@@ -2,46 +2,50 @@ const Cart = require("../models/cart.model");
 
 async function addToCart(req, res) {
   try {
-    const { productId, name, price, image, description } = req.body;
+    const { productId, name, price, description } = req.body;
     const userId = req.userId;
-    
-    let cart = await Cart.findOne({ userId });
+    // console.log(price);
 
+    let cart = await Cart.findOne({ userId });
+    console.log(cart.items);
     if (!cart) {
       cart = await Cart.create({
         userId,
-        items: [
-          {
-            productId,
-            price,
-            name,
-            image,
-            quantity:0,
-            description
-          },
-        ],
+        items: [],
+        images,
+        totalItems: 0,
+        totalPrice: 0,
       });
     }
     // console.log(cart);
 
     const existingItem = cart.items.find(
-      (item) => item.productId === productId,
+      (item) => item.productId.toString() === productId.toString(),
     );
-    console.log(existingItem);
 
     if (existingItem) {
-      existingItem.quantity = Number(existingItem.quantity) +1;
-      cart.totalItems = Number(cart.totalItems) +1 ;
-      cart.totalPrice += Number(existingItem.price)  ;
-      await cart.save();
+      existingItem.quantity = Number(existingItem.quantity) + 1;
+// console.log(cart);
+      existingItem.price = Number(existingItem.price) + Number(price);
     } else {
-      cart.items.push({ productId, name, image, price, quantity: 1, description });
-      cart.totalItems += 1;
-      cart.totalPrice = Number(cart.totalPrice) + Number(price);
-      await cart.save();
+      cart.items.push({
+        productId,
+        name,
+        images,
+        price,
+        description,
+        quantity: 1,
+      });
     }
+    cart.totalItems = Number(cart.totalItems) + 1;
+    cart.totalPrice +=  Number(price);
+    await cart.save();
 
-    return res.status(201).json({ message: "Item added to cart successfully" });
+    // console.log("-----------------------");
+    // console.log("cart", cart);
+    // console.log("-----------------------");
+
+    return res.status(201).json(cart);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -53,13 +57,41 @@ async function getCart(req, res) {
     const userId = req.userId;
     const cart = await Cart.findOne({ userId });
     console.log(cart);
-    return res
-      .status(200)
-      .json(cart );
+    return res.status(200).json(cart);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
 
-module.exports = { addToCart, getCart };
+async function decreament(req, res) {
+  try {
+    const { productId, price } = req.body;
+    
+    const userId = req.userId;
+    const cart = await Cart.findOne({ userId });
+    // console.log(cart);
+    
+    const item = cart.items.find((i) => i.productId == productId);
+    // console.log(item);
+    // console.log("elem", elem);
+    // console.log("--------------------------");
+    if (item.quantity > 1) {
+      item.quantity--;
+    } else {
+      cart.items = cart.items.filter((i) => i.productId != productId);
+    }
+    item.price -= price;
+    cart.totalItems -=1;
+    cart.totalPrice -= price;
+    // console.log(item)
+    await cart.save();
+    console.log(cart);
+
+    return res.status(200).json(cart);
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+}
+
+module.exports = { addToCart, getCart, decreament };

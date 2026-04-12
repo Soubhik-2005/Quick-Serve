@@ -21,7 +21,7 @@ function Cart() {
   },[dispatch])
 
   const items = useSelector(state => state.cart)
-  console.log(items.items)
+  
 
   return (  
     <div>
