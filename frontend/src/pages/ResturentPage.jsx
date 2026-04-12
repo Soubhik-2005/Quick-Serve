@@ -4,6 +4,8 @@ import axios from "axios";
 import Loading from "../components/Loading";
 import { useSelector, useDispatch } from "react-redux";
 import { setCart } from "../redux/slices/cartSlice";
+import {addCart,decreament} from "../services/cartService"
+// import { set } from "mongoose";
 
 function ResturentPage() {
   const { id } = useParams();
@@ -25,47 +27,42 @@ function ResturentPage() {
     getResturent();
   }, [id]);
 
-  async function addCart(item) {
-    try {
-      const { data } = await axios.post(
-        "http://localhost:8000/api/cart/add",
-        {
-          productId: item._id,
-          name: item.name,
-          price: item.price,
-          image: item.image,
-          description: item.description,
-        },
-        { withCredentials: true },
-      );
+   useEffect(()=>{
+      async function fetchCart(){
+        const {data} = await axios.get("http://localhost:8000/api/cart/get",{
+          withCredentials:true
+        })
+        // console.log(data)
+        dispatch(setCart(data));
+  
+      }
+      fetchCart();
+  
+    },[dispatch])
 
-      dispatch(setCart(data));
-      
-
-      // console.log("cart add");
-    } catch (err) {
-      console.log("Error in addCart" + err);
+    const handleAddToCart = async(item,id)=>{
+      try{
+        const data = await addCart(item,id);
+        dispatch(setCart(data));
+      }catch(err){
+        console.log(err);
+      }
     }
-  }
+
+    const handleDecreament = async(item)=>{
+      try{
+        const data = await decreament(item);
+        dispatch(setCart(data));
+      }catch(err){
+        console.log(err);
+      }
+    }
+
   
   const itemsInCart = useSelector((state) => state.cart.items) || []; //return array of object
   // console.log(itemsInCart);
 
- async function decreament(item){
-  try{
-    const {data} = await axios.post("http://localhost:8000/api/cart/decreament",{
-      productId:item._id,
-      price:item.price
-    },
-  {
-    withCredentials:true
-  })
-  console.log(item.price);
-  dispatch(setCart(data));
-  }catch(err){
-    console.log(err);
-  }
- }
+
 
   if (!resturent) return <Loading />;
   return (
@@ -106,16 +103,16 @@ function ResturentPage() {
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-full h-40 obj  ect-cover mb-3 rounded"
+                className="w-full h-70 object-fit mb-3 rounded"
               />
               <h3 className="text-lg font-bold">{item.name}</h3>
               <p className="text-gray-600 mb-3">Price: ${item.price}</p>
               
                   {cartItem ? (
                   <div className="flex gap-4 bg-orange-400 flex gap-4 px-4 py-2 rounded-lg  cursor-pointer text-center shadow-md hover:shadow-lg w-36 ">
-                  <div className="pr-2 " onClick={()=> decreament(item)}>-</div>
+                  <div className="pr-2 " onClick={()=> handleDecreament(item)}>-</div>
                   <div className="px-4">{cartItem?.quantity}</div>
-                  <div className="pl-2" onClick={()=>addCart(item)}>
+                  <div className="pl-2" onClick={()=>handleAddToCart(item,id)}>
                     {/* running the addCart function will increase the number of quantity */}
                     +
                   
@@ -125,7 +122,7 @@ function ResturentPage() {
                   ) : (
                     <button
                   className="bg-orange-400 px-4 py-2 rounded-lg  cursor-pointer text-center shadow-md hover:shadow-lg active:scale-95 "
-                  onClick={() => addCart(item)}> Add to cart </button>
+                  onClick={() => handleAddToCart(item,id)}> Add to cart </button>
                 
                   )}
                 

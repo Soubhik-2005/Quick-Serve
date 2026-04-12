@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const CartSchema = new mongoose.Schema(
   {
     userId: {
@@ -11,10 +10,15 @@ const CartSchema = new mongoose.Schema(
     items: [
       {
         productId: String,
-        image:String,
+        image: String,
         name: String,
         price: Number,
         quantity: Number,
+        resturentId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Resturent",
+          required: true,
+        },
       },
     ],
     totalItems: {

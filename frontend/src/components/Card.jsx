@@ -1,9 +1,9 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import {Link} from "react-router-dom"
 
 function Card({id, img, name, address, deliveryTime, cuisine, rating,logo}) {
-    const Navigate = useNavigate();
+    
   return (
     <Link to={`/resturent/${id}`}>
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-105 object-cover transition duration-300 p-6 w-[100%]" >

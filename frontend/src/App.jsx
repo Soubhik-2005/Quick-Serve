@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import Loading from './components/Loading'
 import ResturentPage from './pages/ResturentPage'
 import Cart from './pages/Cart'
+import Navbar from './components/Navbar'
 
 function App() {
   useFetchCurrentUser();
@@ -18,6 +19,8 @@ function App() {
     return <div><Loading/></div>;
   }
   return (
+    <>
+    <Navbar />
     <Routes>
       
       <Route path="/" element = {user? <Navigate to="/home"/> :<Navigate to="/signup"/>}/>
@@ -29,6 +32,7 @@ function App() {
       
       {/* <Route path="/forgot-password" element={<ForgotPassword/>}/> */}
     </Routes>
+    </>
   )
 }
 

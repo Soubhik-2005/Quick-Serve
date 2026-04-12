@@ -3,7 +3,7 @@
 const initialState ={
     items:[],
     totalItems :0,
-    totalPrice:0
+    totalPrice:0,
 }
 
  const cartSlice = createSlice({
@@ -11,7 +11,7 @@ const initialState ={
   initialState,
   reducers:{
     setCart:(state, action) =>{
-      console.log("Action payload:",action.payload)
+      // console.log(action.payload.items[0].image);
       state.items = action.payload.items;
       state.totalItems = action.payload.totalItems;
       state.totalPrice = action.payload.totalPrice;

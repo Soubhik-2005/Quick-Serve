@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
+// import Navbar from '../components/Navbar'
 import {useState} from 'react'
 import axios from 'axios'
 import { useEffect } from 'react'
@@ -25,7 +25,7 @@ export const Home = () => {
   
   return (
     <div>
-        <Navbar />
+        
         <div className="bg-orange-100 w-screen p-4">
         <h2 className="text-xl p-2">Resturents</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

@@ -2,22 +2,24 @@ const Cart = require("../models/cart.model");
 
 async function addToCart(req, res) {
   try {
-    const { productId, name, price, description } = req.body;
+    const { productId, name, price, image, description,resturentId } = req.body;
     const userId = req.userId;
     // console.log(price);
 
     let cart = await Cart.findOne({ userId });
-    console.log(cart.items);
+    
     if (!cart) {
       cart = await Cart.create({
         userId,
         items: [],
-        images,
+        image,
+      
         totalItems: 0,
         totalPrice: 0,
       });
     }
-    // console.log(cart);
+    console.log(cart.items);
+    console.log("---------------------");
 
     const existingItem = cart.items.find(
       (item) => item.productId.toString() === productId.toString(),
@@ -31,7 +33,8 @@ async function addToCart(req, res) {
       cart.items.push({
         productId,
         name,
-        images,
+        image,
+        resturentId,
         price,
         description,
         quantity: 1,
